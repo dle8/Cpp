@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="EigenGPU" targetName="EigenGPU" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1abf6a70-e96a-48c2-a9e4-844efba6c5b2" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="ProjectId" id="1chrHwvocU8BMY1hc548pxduNZU" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
+  <component name="RunManager">
+    <configuration name="EigenGPU" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EigenGPU" TARGET_NAME="EigenGPU" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="EigenGPU" RUN_TARGET_NAME="EigenGPU">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1abf6a70-e96a-48c2-a9e4-844efba6c5b2" name="Default Changelist" comment="" />
+      <created>1590991581984</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1590991581984</updated>
+      <workItem from="1590991583351" duration="2576000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="468" y="260" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1590992440161">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="468" y="260" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1440.900@0.0.1440.900" timestamp="1590992440161" />
+    <state x="428" y="200" width="670" height="580" key="search.everywhere.popup" timestamp="1590994331849">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="428" y="200" width="670" height="580" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1590994331849" />
+    <state x="490" y="233" width="670" height="676" key="search.everywhere.popup/0.0.1650.1050@0.0.1650.1050" timestamp="1590991746546" />
+  </component>
+</project>

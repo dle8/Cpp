@@ -1,0 +1,9 @@
+Corner turning:
+- If an algorithm requires a kernel code to iterate through data along the row
+operation, one can use shared memory to enable memory coalescing. Threads of a 
+block can first cooperatively load the tiles into the shared memory. CARE MUST BE
+TAKEN TO ENSURE THAT THESE TILES ARE LOADED IN A COALESCED PATTERN. Once the 
+data is in shared memory, they can be accessed either on a row basis or a column 
+basis with much less performance variation because the shared memories are 
+implemented as intrinsically high-speed on-chip memory that does not require 
+coalescing to achieve high data access rate.
