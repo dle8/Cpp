@@ -1,3 +1,16 @@
+/*
+    Privatization technique: replicate highly contended output data structures to private copies so that each thread or subsets of
+    thread can update its private copy. 
+    
+    Benefit: 
+        - private copies can be accessed with much less contention and often at much lower latency. 
+        - private copies increase throughput for updating the data structure.
+
+    Downside:
+        - private copies need to be merged into the original data structure after the computation completes.
+*/
+
+
 #include <bits/stdc++.h>
 using namespace std;
 
