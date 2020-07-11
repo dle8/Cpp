@@ -1,3 +1,13 @@
+/*
+    Still using the idea of privatization to avoid high traffic for high contended output data, but used for datasets that have a
+    large concentration of identical data values in localized areas. (eg pictures of the sky can have large patches of pixels of
+    identical value).
+
+    Optimization: each thread aggregate consecutive updates into a single update if they are updating the same element of histogram.
+    Such aggregation redices the number of atomic operations to the highly contended histogram elements, thus improving the effective
+    throughput of the computation.
+*/
+
 #include <bits/stdc++.h>
 using namespace std;
 
