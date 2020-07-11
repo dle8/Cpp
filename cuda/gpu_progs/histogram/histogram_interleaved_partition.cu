@@ -17,18 +17,10 @@ void print(int* a, int sz) {
 
 __global__ void histogram(char* buffer, int sz, int* bins) {
     int idx = blockDim.x * blockIdx.x + threadIdx.x;
-    // Block partition pattern: divide the string into blocks whose lengths are section_size
-    int section_size = (sz - 1) / (blockDim.x * gridDim.x) + 1;
-    int start = idx * section_size;
-
-    for (int i = 0; i < section_size; ++i) {
-        int pos = start + i;
-        if (pos < sz) {
-            int alphabet_pos = buffer[pos] - 'a';
-            if (alphabet_pos >= 0 && alphabet_pos < 26) {
-                atomicAdd(&bins[alphabet_pos / 4], 1); // Remember to have &
-            }
-        }
+    // All threads handle blockDim.x * gridDim.x consecutive elements in each iteration
+    for (int i = idx; i < sz; i += blockDim.x * gridDim.x) {
+        int alphabet_pos = buffer[i] - 'a';
+        if (alphabet_pos >= 0 && alphabet_pos < 26) atomicAdd(&bins[alphabet_pos / 4], 1);
     }
 }
 
