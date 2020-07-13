@@ -60,6 +60,11 @@ __global__ void brent_kung_scan(int *da, int* db, int sz) {
             smem[index + stride] += smem[index];
         }
     }
+    
+    for (int stride = SECTION_SIZE / 4; stride >= 4; stride / 2) {
+        __syncthreads();
+        
+    }
 
     __syncthreads();
     if (i < sz) db[i] = smem[threadIdx.x];
