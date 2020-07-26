@@ -8,9 +8,10 @@
 
 
 #include <bits/stdc++.h>
+// #include <chrono>
 #include <omp.h>
 #define NUM_THREAD 4
-#define CACHE_LINE_SIZE 64
+#define CACHE_LINE_SIZE 64 // Cache line size for Intel core I7
 
 using namespace std;
 
@@ -21,8 +22,8 @@ struct padded_i{
 };
 
 void find_max_subarray(int *pieces , int homes , int max_candy, int &max_collected_candy, int &range_left, int &range_right) {
-	int num_threads;
-	omp_set_num_threads(min(NUM_THREAD, homes));
+	int num_threads = min(NUM_THREAD, homes);
+	omp_set_num_threads(num_threads);
     padded_i max_sum[num_threads];
 
 	int length = (homes + num_threads - 1) / num_threads;
@@ -35,15 +36,25 @@ void find_max_subarray(int *pieces , int homes , int max_candy, int &max_collect
         // Range managed by thread_index thread is [thread_index * length, (thread_index + 1) * length)
         int start_section = thread_index * length, end_section = min(start_section + length, homes);
         // Value right - 1 dictates the end of subarray with maximum sum that smaller than max_candy
-        int right = start_section, cur_sum = 0, cur_max = 0;
+        int right = start_section, cur_sum = 0;
         for (int left = start_section; left < end_section; ++left) {
             while (right < homes && cur_sum + pieces[right] <= max_candy) {
-                ++right;
+                cur_sum += pieces[right++];
+                if (cur_sum > max_sum[thread_index].sum && right > left) {
+                    max_sum[thread_index].sum = cur_sum;
+                    max_sum[thread_index].left = left;
+                    max_sum[thread_index].right = right - 1;
+
+                    // Condition to exit early
+                    if (max_sum[thread_index].sum == max_candy) {
+                        break;
+                    }
+                }
             }
-            if (cur_sum > cur_max) {
-                max_sum[thread_index].sum = cur_sum;
-                max_sum[thread_index].left = left;
-                max_sum[thread_index].right = right;
+        
+            // Condition to exit early
+            if (max_sum[thread_index].sum == max_candy) {
+                break;
             }
             cur_sum -= pieces[left];
         }
@@ -67,20 +78,32 @@ void find_max_subarray(int *pieces , int homes , int max_candy, int &max_collect
 int main(int argc , char *argv[]){
 	freopen("input.txt", "r", stdin);
 
-	int homes, max_candy;
+	int homes, max_candy, max_collected_candy = -1, range_left = -1, range_right = -1;;
 	cin >> homes >> max_candy;
 	int pieces[homes];
-	for (int i = 0; i < homes; ++i) cin >> pieces[i];
+	for (int i = 0; i < homes; ++i) {
+        cin >> pieces[i];
+        if (max_candy == 0 && pieces[i] == 0 && range_left == -1) {
+            range_left = range_right = i + 1;
+            max_collected_candy = 0;
+        }
+    }
 
     fclose(stdin);
 
-    int max_collected_candy = -1, range_left = -1, range_right = -1;
-	
-    find_max_subarray(pieces, homes, max_candy, max_collected_candy, range_left, range_right);
-    
+    auto start = chrono::steady_clock::now();
+
+    if (max_candy != 0) {
+        find_max_subarray(pieces, homes, max_candy, max_collected_candy, range_left, range_right);
+    }
+
+    auto end = chrono::steady_clock::now();
+    cout << chrono::duration_cast<chrono::microseconds>(end - start).count() << "ms" << '\n';
+
     if (max_collected_candy != -1) {
         cout << "Start at home " << range_left << " and go to home " << range_right<< " getting " << max_collected_candy << " pieces of candy" << endl;
     } else cout << "Don't go here" << endl;
+
 	
     return 0;
 }

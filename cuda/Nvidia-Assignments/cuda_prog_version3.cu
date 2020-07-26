@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <limits.h>
 
-#include <bits/stdc++.h>
-
 bool checkResults(float *gold, float *d_data, int dimx, int dimy, float rel_tol) {
     for (int iy = 0; iy < dimy; ++iy) {
         for (int ix = 0; ix < dimx; ++ix) {
@@ -62,7 +60,7 @@ __global__ void kernel_A(float *g_data, int dimx, int dimy, int niterations) {
       
     int iy = blockIdx.y * blockDim.y + threadIdx.y;
     int ix = blockIdx.x * blockDim.x + threadIdx.x;
-    //vectorized load from global
+    // Vectorized load from global
     float4 value = reinterpret_cast<float4*>(&g_data[iy * dimx])[ix]; 
     // #pragma unroll
     for (int i = 0; i < niterations; i++) { 
@@ -71,7 +69,7 @@ __global__ void kernel_A(float *g_data, int dimx, int dimy, int niterations) {
         value.z += sqrtf(sinf(value.z) + 1.f);
         value.w += sqrtf(tanf(value.w) + 1.f);
     }
-    //store back to global
+    // Store back to global
     reinterpret_cast<float4*>(&g_data[iy * dimx])[ix] = value;
 }
 
@@ -80,18 +78,12 @@ void launchKernel(float * d_data, int dimx, int dimy, int niterations) {
     // Only change the contents of this function and the kernel(s). You may
     // change the kernel's function signature as you see fit. 
 
-    //query number of SMs
-    //cudaDeviceProp prop;
-    //cudaGetDeviceProperties(&prop, 0);
-    //int num_sms = prop.multiProcessorCount;
-
-    dim3 block(256, 1);
+    dim3 block(32, 32);
     dim3 grid((dimx / 4 + block.x - 1) / block.x , (dimy + block.y - 1) / block.y);
     kernel_A<<<grid, block>>>(d_data, dimx, dimy, niterations);
 }
 
-float timing_experiment(float *d_data,
-                        int dimx, int dimy, int niterations, int nreps) {
+float timing_experiment(float *d_data, int dimx, int dimy, int niterations, int nreps) {
   float elapsed_time_ms = 0.0f;
   cudaEvent_t start, stop;
   cudaEventCreate(&start);

@@ -7,11 +7,13 @@
 */
 
 #include <bits/stdc++.h>
+// #include <chrono>
 using namespace std;
 
 void find_max_subarray(int* pieces, int homes, int max_candy, int &max_collected_candy, int &range_left, int &range_right) {
     int cur_sum = 0, left = 0, cur_max = 0;
     pair<int, int> range = make_pair(-1, -1);
+    
     for (int i = 0; i < homes; ++i) {
         cur_sum += pieces[i];
         while (left <= i && cur_sum > max_candy) {
@@ -22,6 +24,7 @@ void find_max_subarray(int* pieces, int homes, int max_candy, int &max_collected
             range = make_pair(left, i);
         }
     }
+
     max_collected_candy = cur_max;
     range_left = range.first + 1;
     range_right = range.second + 1;
@@ -30,20 +33,30 @@ void find_max_subarray(int* pieces, int homes, int max_candy, int &max_collected
 int main() {
     freopen("input.txt", "r", stdin);
 
-    int homes, max_candy;
+    int homes, max_candy, max_collected_candy = -1, range_left = -1, range_right = -1;;
     cin >> homes >> max_candy;
     int pieces[homes];
-    for (int i = 0; i < homes; ++i) cin >> pieces[i];
-
+    for (int i = 0; i < homes; ++i) {
+        cin >> pieces[i];
+        if (max_candy == 0 && pieces[i] == 0 && range_left == -1) {
+            range_left = range_right = i + 1;
+            max_collected_candy = 0;
+        }
+    }
     fclose(stdin);
+ 
+    // auto start = chrono::steady_clock::now();
+    
+    if (max_candy != 0) {
+        find_max_subarray(pieces, homes, max_candy, max_collected_candy, range_left, range_right);
+    }
 
-    int max_collected_candy = -1, range_left = -1, range_right = -1;
-
-    find_max_subarray(pieces, homes, max_candy, max_collected_candy, range_left, range_right);
+    // auto end = chrono::steady_clock::now();
+    // cout << chrono::duration_cast<chrono::microseconds>(end - start).count() << "ms" << '\n';
 
     if (max_collected_candy != -1) {
         cout << "Start at home " << range_left << " and go to home " << range_right<< " getting " << max_collected_candy << " pieces of candy" << endl;
     } else cout << "Don't go here" << endl;
-    
+
     return 0;
 }

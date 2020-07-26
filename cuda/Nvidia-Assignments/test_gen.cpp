@@ -33,9 +33,9 @@ int main() {
     }
 
     inp.close();
-    system("g++ -o run trick_or_treat.cpp");
+    system("g++ -std=c++11 -o run trick_or_treat.cpp");
     system("./run >> output.txt");
-    system("g++ -o run -fopenmp trick_or_treat_openmp.cpp");
+    system("g++ -std=c++11 -fopenmp -o run trick_or_treat_openmp.cpp");
     system("./run >> output_openmp.txt");
 
     if (diff("output.txt", "output_openmp.txt") == 0) {

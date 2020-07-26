@@ -1,1 +1,0 @@
-Running on  Intel Core i7, this gives a cache line of 64 bytes.

@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <limits.h>
 
-using namespace std;
-
 bool checkResults(float *gold, float *d_data, int dimx, int dimy, float rel_tol) {
     for (int iy = 0; iy < dimy; ++iy) {
         for (int ix = 0; ix < dimx; ++ix) {
@@ -95,16 +93,9 @@ void launchKernel(float * d_data, int dimx, int dimy, int niterations) {
     // Only change the contents of this function and the kernel(s). You may
     // change the kernel's function signature as you see fit. 
 
-    // query number of SMs
-    // cudaDeviceProp prop;
-    // cudaGetDeviceProperties(&prop, 0);
-    // int num_sms = prop.multiProcessorCount;
-
-    // dim3 block(1, 32);
-    // dim3 block(1, 256);
     dim3 block(1, 256);
     dim3 grid((dimx + block.x - 1) / block.x, (dimy + block.y - 1) / block.y);
-    // dim3 grid(1, num_sms);
+    
     kernel_A<<<grid, block>>>(d_data, dimx, dimy, niterations);
 }
 
