@@ -14,9 +14,9 @@ int main() {
     }
 
     // top element
-    cout << s.top();
+    cout << s.top(); // O(1): calling back on the underlying container
 
     // remove top element
-    s.pop();
+    s.pop(); // O(1): calling pop_back on the underlying container
     return 0;
 }
