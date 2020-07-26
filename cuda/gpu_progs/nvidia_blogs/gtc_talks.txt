@@ -1,0 +1,40 @@
+Multi-GPU programming:
+- https://developer.download.nvidia.com/video/gputechconf/gtc/2019/presentation/s9139-multi-gpu-programming-models.pdf
+
+Virtual Memory Management:
+- https://developer.nvidia.com/blog/introducing-low-level-gpu-virtual-memory-management/
+
+Unified Memory in CUDA:
+- https://devblogs.nvidia.com/unified-memory-cuda-beginners/
+- devblogs.nvidia.com/maximizing-unified-memory-performance-cuda/?fbclid=IwAR3NWEU7H1LVwfRtw8KLWveb8VAfqu4I9QNQHELzDt-U_TKM1vFS1tCXG68
+
+Optimizing CUDA Applications For Volta/Turing Architecture:
+- https://on-demand.gputechconf.com/gtc-il/2018/pdf/sil8140-optimizing-cuda-applications-for-the-volta-turing-gpu-architecture.pdf
+
+Volta architecture:
+- https://developer.nvidia.com/blog/inside-volta/#:~:text=New%20Tensor%20Cores%20are%20the,for%20training%20and%20inference%20applications.&text=The%20Tesla%20V100%20GPU%20contains%20640%20Tensor%20Cores%3A%208%20per%20SM.
+- https://on-demand.gputechconf.com/gtc/2017/presentation/s7798-luke-durant-inside-volta.pdf
+
+Ampere architecture:
+- https://developer.download.nvidia.com/video/gputechconf/gtc/2020/presentations/s21730-inside-the-nvidia-ampere-architecture.pdf
+- https://developer.download.nvidia.com/video/gputechconf/gtc/2020/presentations/s21819-optimizing-applications-for-nvidia-ampere-gpu-architecture.pdf
+- https://developer.download.nvidia.com/video/gputechconf/gtc/2020/presentations/s21170-cuda-on-nvidia-ampere-gpu-architecture-taking-your-algorithms-to-the-next-level-of-performance.pdf
+
+Developing Real-time NN for Jetson
+- https://developer.download.nvidia.com/video/gputechconf/gtc/2020/presentations/s22676-developing-real-time-neural-networks-for-jetson.pdf
+
+Geolocation of Traffic Lights and Signs Using Dashcam: Towards Low-cost Map Maintainance:
+- https://www.nvidia.com/content/dam/en-zz/Solutions/gtc/conference-posters/gtc2020-posters/Autonomous_Vehicles_02_P21912_Kazuyuki_Miyazawa_Web.pdf
+
+Jetson Nano:
+- Developing Real-time NN for Jetson
+    - https://developer.download.nvidia.com/video/gputechconf/gtc/2020/presentations/s22676-developing-real-time-neural-networks-for-jetson.pdf
+
+Deep learning AI institution:
+- https://www.nvidia.com/en-us/deep-learning-ai/education/
+
+Optimizing TensorRT Conversion for real-time inference on autonomous vehicles:
+- https://developer.download.nvidia.com/video/gputechconf/gtc/2020/presentations/s22198-optimizing-tensorrt-conversion-for-real-time-inference-on-autonomous-vehicles.pdf
+
+PredictionNet: Predicting the Future in Multi-Agent Environments for Autonomous Vehicle Applications
+- https://www.nvidia.com/en-us/gtc/on-demand/?search.primarytopic=option_1564595007094&search.primarytopic=1570041291499001PXEP&search.primarytopic=1565221509603001DtPN&search=
