@@ -40,10 +40,6 @@ __global__ void history_kernel(char *dx, int size, int* histogram) {
     }
 
     if (threadIdx.x < 7) atomicAdd(&histogram[threadIdx.x], histogram_private[threadIdx.x]);
-
-    dim3 block_dim(16);
-    dim3 grid_dim(1);
-    inside_kernel<<<grid_dim, block_dim>>>(dx, size, histogram);
 }
 
 int main() {

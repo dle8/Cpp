@@ -3,8 +3,7 @@
 
 #include <iostream>
 
-int main(void)
-{
+int main(void) {
     // H has storage for 4 integers
     thrust::host_vector<int> H(4);
 

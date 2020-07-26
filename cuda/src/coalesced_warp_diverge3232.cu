@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-const int TILE_DIM = 32;
-const int BLOCK_ROWS = 32;
 
 __global__ void kernel_A( float *g_data, int dimx, int dimy, int niterations)
 {
@@ -12,43 +10,25 @@ __global__ void kernel_A( float *g_data, int dimx, int dimy, int niterations)
 	int index = blockIdx.x*blockDim.x + ix;
 	int idx = iy*dimx + index;
 
-
-	__shared__ float shmem[TILE_DIM][TILE_DIM + 1];
-
-
-	//load coalesced global memory into share memory
-	shmem[threadIdx.y][threadIdx.x] = g_data[idx];
-
-	__syncthreads();
-
-	//calculate warp index
-	int warpID = threadIdx.y % BLOCK_ROWS;
-
-	//compute 32 columns using 32 warps
+	float value = g_data[idx];
 	
-	float value = shmem[threadIdx.x][threadIdx.y];
+	if(ix & 1){
 
-	if(warpID & 1){
-
-		for(int i = 0 ; i < niterations ; i++){
-			value +=  sqrtf( cosf(value) + 1.f );
+	    for(int i=0; i<niterations; i++)
+	    {
+	    	value += sqrtf( logf(value) + 1.f );
 		}
 	}
 
 	else{
 
-		for(int i = 0 ; i < niterations ; i++){
-			value += sqrtf( logf(value) + 1.f );
+		for(int i=0; i<niterations; i++)
+		{
+			value += sqrtf( cosf(value) + 1.f );
 		}
 	}
 
-	shmem[threadIdx.x][threadIdx.y] = value;
-
-	__syncthreads();
-
-	//store back to global memory
-	g_data[idx] = shmem[threadIdx.y][threadIdx.x];
-	
+	g_data[idx] = value;
 }
 
 float timing_experiment( void (*kernel)( float*, int,int,int), float *d_data, int dimx, int dimy, int niterations, int nreps, int blockx, int blocky )
@@ -77,8 +57,8 @@ float timing_experiment( void (*kernel)( float*, int,int,int), float *d_data, in
 
 int main()
 {
-	int dimx = 2*4096;
-	int dimy = 2*4096;
+	int dimx = 2*1024;
+	int dimy = 2*1024;
 
 	int nreps = 10;
 	int niterations = 20;
@@ -106,7 +86,7 @@ int main()
 
 	float elapsed_time_ms=0.0f;
 
-	elapsed_time_ms = timing_experiment( kernel_A, d_data, dimx,dimy, niterations, nreps, 32, 32 );
+	elapsed_time_ms = timing_experiment( kernel_A, d_data, dimx,dimy, niterations, nreps, 32, 32);
 	printf("A:  %8.2f ms\n", elapsed_time_ms );
 
 	printf("CUDA: %s\n", cudaGetErrorString( cudaGetLastError() ) );
@@ -120,3 +100,5 @@ int main()
 
 	return 0;
 }
+
+
