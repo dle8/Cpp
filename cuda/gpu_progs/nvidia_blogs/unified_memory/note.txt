@@ -1,0 +1,27 @@
+UM provides the user with a view of single memory space that's accessible by all GPUs and CPUs in the system. Pointer to UM data is allocated using cudaMallocManaged() and can be used in both host and device code.
+From Pascal onwards, cudaMallocManaged() does not allocate physical memory but allocates memory based on a first touch basis. If GPu first touches the variable, the page will be allocated and mapped in the GPU
+page table, otherwise in CPU page table. 
+
+The sequence of operations during a page migration:
+1. Allocate new pages on the GPU and CPU (first touch basis). If the page is not present and mapped to another, a device page table page fault occurs.
+2. The old page on CPU is unmapped form CPU memory
+3. THe pages data is copied from the CPU to GPU physical memory
+4. The new pages are mapped on the GPU, while the old pages are freed on the CPU.
+
+TLB performs address translation from VA to PA. When a page fault occurs, TLB for the respective SM is locked. This means new instructions will be stalled until the time the preceding steps are performed
+and finally unlocked in TLB. This is necessary to maintain coherency and consistent state of memory view within an SM. The driver is responsible for removing these duplicates, updating the mapping, and
+transferring page data.
+
+Profiling UM:
+When using nvprof for profiling, it may show "GPU page fault groups". Individual duplicated page faults may be grouped together into groups to be transferred just once.
+Use --print-gpu-trace metrics to see individual page faults
+
+Optimizations
+1. Adding a kernel to init the data in GPU iteself, so the pages are allocated and mapped to GPU mem as they are touched first in GPU kernel.
+2. Use warp per page. Each warp access elements that are in the same pages to reduce GPU page groups.
+3. Prefetching: Hints the driver to prefetch the data that we believe will be used in the device prior to its use. cudaMemPrefetchAsync().
+
+
+Why using UM?
+Avoid over-subscription, a situation where memory demanded go beyond capabled memory. This allows application whose size is too big to fit in GPU memory.
+Also, NVLink and NVSwitch allow for fast transfer between GPU with high bandwidth and low latency. 

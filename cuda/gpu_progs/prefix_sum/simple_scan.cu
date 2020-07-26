@@ -1,12 +1,37 @@
 /*
-    Inclusive scan (cut points): takes (x[0], x[1], ..., x[n - 1]) into (x[0], x[0] ⊕ x[1], x[0] ⊕ x[1] ⊕ x[2], ..., x[0] ⊕ x[1] ... ⊕  x[n - 1])
-    Exclusive scan (beginning points): takes (x[0], x[1], ..., x[n - 1]) into (0, x[0], x[0] ⊕ x[1] ⊕ x[2], ..., x[0] ⊕ x[1] ... ⊕  x[n - 2])
+    Kogge -stone algorithm
 
-    In order to turn inclusive scan to exclusive scan, shift the elements to the right 1 pos, and fill the first element with 0.
-    Vice versa, in order to turn exclusive scan to inclusive scan, shift the elements to the left 1 pos, and fill in the last element.
+    The main objective is to create each element quickly by calculating a reduction tree of the relevant input elements for each output
+    element. Before the algorithm begins, assume XY[i] contains the input elment x[i]. At the end of iteration n, XY[i] will contain
+    the sum of up to 2^n input elements at and before the location.
 
-    In this example, the kernel performs scan on one section of the input that is small enough for a block to handle. The size of a
-    section is defined as the compile-time constant SECTION_SIZE.
+    We assign each thread to evolve the contents of one XY element. We write kernel that performs scan on 1 section of the input that is
+    small enought for a block to handle. The size of a section is defined as the compile-time constant SECTION_SIZE. We assume that the
+    kernel launch will use BLOCK_SIZE as the block size so that the number of threads is equal to the number of section elements. Each thread
+    will be responsible for calculating one output elements.
+
+    The loop iterates through the reduction tree for the XY array position assigned to a thread. Use __syncthread to ensure all threads have
+    finished their previous iteration of additions in the reduction tree before any of them starts the next iteration.
+
+    Speed and efficiency:
+        - All threads iterates up to Log2N steps, N = section_size. In each iteration, the number of inactive threads = stride size. Therefore,
+        amount of work done for the algorithms is: sigma(N - stride), for stride = 1, 2, 4, .., N/2 (so Log2N terms) = N*log2N - (N - 1). So
+        the kernel do more work and the sequential algorithm.
+
+        - Assume the sequential scan tkaes N time units to process N input elements. With P exeuction unit (SM), we can expect the kernel
+        to execute for (N * log2N) / P time units. 
+
+    Advantage:
+        - Good execution spped given sufficient hardware resource.
+        - This kernel is typically used to calculate the scan result for a section with a modest number of elements, such as 32, or 64 as its
+        execution has very limited amount of control divergence. In newer GPU ar, its computation can be efficiently performed with shuffle
+        instructions within warps.
+
+    Disadvantages:
+        - The use of hardware (SM) for executing the parallel kernel is much less efficient. 
+        - The extra work consume additional enery. This additional demand makes the kernel less appropriate for power-constrained envs such as
+        mobile applications.
+
 */
 
 #include <bits/stdc++.h>
@@ -29,25 +54,25 @@ void init(int* &a, int sz) {
 }
 
 __global__ void scan(int *da, int* db, int sz) {
-    __shared__ int smem[SECTION_SIZE];
+    __shared__ int XY[SECTION_SIZE];
     int i = threadIdx.x + blockDim.x * blockIdx.x;
 
     // Inclusive scan
-    if (i < sz) smem[threadIdx.x] = da[i];
+    if (i < sz) XY[threadIdx.x] = da[i];
 
     // Exclusive scan
     /*
     if (i < sz && threadIdx.x != 0) {
-        smem[threadIdx.x] = da[i - 1];
-    } else smem[threadIdx.x] = 0;
+        XY[threadIdx.x] = da[i - 1];
+    } else XY[threadIdx.x] = 0;
     */
     
     for (unsigned int stride = 1; stride < blockDim.x; stride *= 2) {
         __syncthreads();
-        if (threadIdx.x >= stride) smem[threadIdx.x] += smem[threadIdx.x - stride];
+        if (threadIdx.x >= stride) XY[threadIdx.x] += XY[threadIdx.x - stride];
     }
 
-    db[i] = smem[threadIdx.x];
+    db[i] = XY[threadIdx.x];
 }
 
 int main() {

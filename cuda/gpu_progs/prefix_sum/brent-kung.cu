@@ -1,4 +1,8 @@
 /*
+    One of the fastest parallel ways to produce sum values for a set of values is a reduction tree. With sufficient execution units, 
+    a reduction tree can generate the sum for N values in log2N time units. The tree can also generate a number of subsums that can be used
+    to calculate some scan output values.
+
     The idea is having two phases: reduction phase and post-reduction reverse phase.
     The reduction phase:
         - for iteration i, let the threads whose indexes take the form k * 2 ^ i - 1 to
@@ -9,14 +13,27 @@
         stride value decreases from SECTION_SIZE/4 to 1 since SECTION_SIZE / 2 is already optimally calculated.
         - In each iteration, we need to push the value of the XY element from a position that is a multiple
         of the stride value - 1 to a position that is a stride away.
+        - NUmber of operations is (2 - 1) + (4 - 1) + ... + (N / 4 - 1) + (N / 2 - 1), which is N - 1 - log2N.
+        - SO the total scan is 2N - 2 - log2N.
+
+    Advantage: 
+        - As the input section increases, the algorithm never performs more than twice the number of operations performed by the sequential
+        algorithm. 
+    
+    Disadvantage:
+        - NUmber of active threads drops much faster through the reduction tree than simple scan. However, the inactive threads continue
+        to consume execution resources in a CUDA device. Consequently, the amount of resources consumed is actually closer to
+        (N / 2) * (2 * log2N - 1).
 
     Notice that: 
         - having more than SECTION_SIZE / 2 threads is unnecessary for reduction or distribution phase.
         - Therefore, we can launch a kernel with SECTION_SIZE / 2 threads in a block.
 
-    Technique: use a decreasing number of contiguous threads to perform the additions as the loop advances
-    (accrue the working threads to the front to avoid control divergence cause by alternative 
-    differently-behaved threads) (**)
+    Technique: 
+        - TO avoid thread divergence, use a decreasing number of contiguous threads to perform the additions as the 
+        loop advances (accrue the working threads to the front to avoid control divergence cause by alternative 
+        differently-behaved threads) (**)
+
 */
 
 #include <bits/stdc++.h>

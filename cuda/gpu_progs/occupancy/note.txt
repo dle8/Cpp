@@ -1,0 +1,19 @@
+To know resources used in kernel, use nvcc compiler options:
+1. --resource-usage: setting a verbos option for GPU resource usage
+2. -gencode: specifying the target architecture to compile and generate opcodes: for Pascal, use arch=compute_60,code=sm_60. nvcc shows how many 
+registers & shared memory used.
+
+After that, use CUDA Occupancy Calculator in CUDA toolkit (/usr/local/cuda-9.1/tools), which is an excel file. \
+It requires:
+1. Compute capability
+2. Thread block resource information: threads per block, register per thread, shared memory per block
+
+GPU resource tuning:
+1. Use __launch_bound__ qualifier with kernel to tell NVCC guarantee the min thread blocks per SM with the max block size. Compiler checks the 
+upper bound resources and reduces the limiting resource usage per block. If resource usage does not exceed the upper limit, the compiler adjusts 
+the register usage if CUDA can schedule an extra thread block per SM.
+2. Limit number of occupied register usages at application level using --maxrregcount. This flag to NVCC specifies the number, and the compiler 
+will reorder the register usages. However, this can introduce thread performance drawn by register throttling. Compiler can put registers 
+into local memory if usage goes beyond limits.
+
+Measure occupancy using --achieved_occpancy metrics:

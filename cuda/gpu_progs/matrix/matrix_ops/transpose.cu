@@ -1,24 +1,27 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-__global__ void transposeCoalesced(float *odata, const float *idata)
-{
-  __shared__ float tile[TILE_DIM][TILE_DIM + 1];
+__global__  void transpose_per_element_tiled(float* t, const float* m, int matrixSize) { 
+   int col = blockIdx.x * blockDim.x + threadIdx.x;        // col 
+   int row = blockIdx.y * blockDim.y + threadIdx.y;        // row 
 
-  int x = blockIdx.x * TILE_DIM + threadIdx.x;
-  int y = blockIdx.y * TILE_DIM + threadIdx.y;
-  int width = gridDim.x * TILE_DIM;
+   if (col >= matrixSize || row >= matrixSize) return; 
 
-  for (int j = 0; j < TILE_DIM; j += BLOCK_ROWS)
-     tile[threadIdx.y+j][threadIdx.x] = idata[(y+j)*width + x];
+   extern __shared__ float tile[]; 
 
-  __syncthreads();
+   // Coalesced read from global memory - TRANSPOSED write into shared memory 
+   int from = row * matrixSize + col; 
+   int ty   = threadIdx.y * blockDim.y + threadIdx.x;    // row 
 
-  x = blockIdx.y * TILE_DIM + threadIdx.x;  // transpose block offset
-  y = blockIdx.x * TILE_DIM + threadIdx.y;
+   tile[ty] = m[from]; 
+   __syncthreads(); 
 
-  for (int j = 0; j < TILE_DIM; j += BLOCK_ROWS)
-     odata[(y+j)*width + x] = tile[threadIdx.x][threadIdx.y + j];
+   int tx   = threadIdx.y + threadIdx.x * blockDim.x;    // col 
+
+   // Read from shared memory - coalesced write to global memory 
+   int to   = (blockIdx.y * blockDim.y + threadIdx.x) + (blockIdx.x * blockDim.x + threadIdx.y) * matrixSize; 
+
+   t[to] = tile[tx];
 }
 
 void print(float* a, int sz) {
