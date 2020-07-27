@@ -32,6 +32,9 @@ int main() {
     // insert
     fifth.insert(44); // O(logn)
 
+    // find
+    auto iter = fifth.find(44); // O(logn): return the iterator of the value, else return set::end
+
     // erase
     // second.erase(second.begin()); // O(1): erase(position)
     second.erase(20); // O(logn): erase(val)
