@@ -1,1 +1,4 @@
 cuda/.*
+.idea
+.vscode
+run
