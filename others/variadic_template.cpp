@@ -1,8 +1,10 @@
 /*
-    A variadic template is a template that is defined to accept an arbitrary number of arguments of arbitraty types. The key to implementing a 
-    variadic template is to note that when you pass a list of arguments to it, you can separate the first argument from the rest. Here we do
-    something for the first argument(the head) and then recursively call f() with the rest of the arguments (the tail). The ellipsis, ..., is
-    used to indicate "the rest" of a list. Eventually, of course, "tail" will become empty and we need a separate function to deal with that.
+    A variadic template is a template that is defined to accept an arbitrary number of arguments of 
+    arbitrary types. The key to implementing a variadic template is to note that when you pass a 
+    list of arguments to it, you can separate the first argument from the rest. Here we do something
+    for the first argument(the head) and then recursively call f() with the rest of the arguments 
+    (the tail). The ellipsis, ..., is used to indicate "the rest" of a list. Eventually, of course,
+     "tail" will become empty and we need a separate function to deal with that.
 */
 
 #include <bits/stdc++.h>
