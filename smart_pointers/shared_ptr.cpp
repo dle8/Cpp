@@ -1,5 +1,7 @@
 /*
-    shared_ptr is similar to unique_ptr except that shared_ptr is copied rather than moved. The shared_ptr for an object share ownership of an object and that object is destroyed then the last of its shared_ptr is destroyed.
+    shared_ptr is similar to unique_ptr except that shared_ptr is copied rather than moved. 
+    The shared_ptr for an object share ownership of an object and that object is destroyed 
+    then the last of its shared_ptr is destroyed.
 */
 
 #include <bits/stdc++.h>
