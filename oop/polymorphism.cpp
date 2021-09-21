@@ -1,7 +1,7 @@
 /*
 Polymorphism means having many form. Typically, polymorphism occurs when there's a hierachy of classes and they are
  elated by inheritance.
-C++ polymorphiims means that a call to a member function will cause a different functino ot be executed depending on the
+C++ polymorphism means that a call to a member function will cause a different functino ot be executed depending on the
  type of object that
 invokes the function.
 
